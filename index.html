@@ -1,0 +1,2910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>VisionInspect AI | Metal Inspection</title>
+
+    <meta
+        name="description"
+        content="VisionInspect AI - ESP32-CAM based intelligent metal part visual inspection system."
+    >
+
+    <meta name="theme-color" content="#05080d">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- =========================================================
+     GLOBAL BACKGROUND
+========================================================= -->
+
+<div class="background-system">
+
+    <div class="bg-grid"></div>
+
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+    <div class="bg-glow glow-3"></div>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="scan-background-line"></div>
+
+</div>
+
+
+<!-- =========================================================
+     INTRO / BOOT SCREEN
+========================================================= -->
+
+<div id="bootScreen" class="boot-screen">
+
+    <div class="boot-grid"></div>
+
+    <div class="boot-center">
+
+        <div class="boot-camera">
+
+            <div class="boot-camera-ring ring-1"></div>
+            <div class="boot-camera-ring ring-2"></div>
+            <div class="boot-camera-ring ring-3"></div>
+
+            <div class="boot-lens">
+                <span></span>
+            </div>
+
+        </div>
+
+
+        <div class="boot-system-name">
+            VISION<span>INSPECT</span>
+        </div>
+
+        <div class="boot-subtitle">
+            ARTIFICIAL VISION INSPECTION SYSTEM
+        </div>
+
+
+        <div class="boot-terminal">
+
+            <div>
+                <span>&gt;</span>
+                INITIALIZING AI VISION CORE...
+            </div>
+
+            <div>
+                <span>&gt;</span>
+                LOADING COMPUTER VISION MODULE...
+            </div>
+
+            <div>
+                <span>&gt;</span>
+                SEARCHING FOR CAMERA LINK...
+            </div>
+
+            <div id="bootLastLine">
+                <span>&gt;</span>
+                SYSTEM READY
+            </div>
+
+        </div>
+
+
+        <div class="boot-progress">
+
+            <div class="boot-progress-track">
+                <span id="bootProgress"></span>
+            </div>
+
+            <small id="bootPercent">
+                0%
+            </small>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     APPLICATION
+========================================================= -->
+
+<div id="application" class="application">
+
+
+<!-- =========================================================
+     TOP HUD
+========================================================= -->
+
+<header class="top-hud">
+
+
+    <!-- BRAND -->
+
+    <div class="brand-block">
+
+        <div class="brand-symbol">
+
+            <div class="brand-symbol-inner"></div>
+
+        </div>
+
+        <div class="brand-text">
+
+            <h1>
+                VISION<span>INSPECT</span>
+            </h1>
+
+            <p>
+                AI INDUSTRIAL VISION SYSTEM
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- CENTER SYSTEM STATUS -->
+
+    <div class="hud-center-status">
+
+        <div class="system-pulse"></div>
+
+        <span id="globalSystemStatus">
+            SYSTEM STANDBY
+        </span>
+
+        <span class="status-separator">
+            //
+        </span>
+
+        <span id="systemTime">
+            00:00:00
+        </span>
+
+    </div>
+
+
+    <!-- RIGHT STATUS -->
+
+    <div class="hud-right">
+
+        <div class="hud-status-item">
+
+            <span class="hud-label">
+                AI
+            </span>
+
+            <span
+                id="aiStatus"
+                class="hud-value online">
+                READY
+            </span>
+
+        </div>
+
+
+        <div class="hud-status-item">
+
+            <span class="hud-label">
+                CAM
+            </span>
+
+            <span
+                id="cameraStatus"
+                class="hud-value offline">
+                OFFLINE
+            </span>
+
+        </div>
+
+
+        <div class="hud-status-item">
+
+            <span class="hud-label">
+                LINK
+            </span>
+
+            <span
+                id="networkStatus"
+                class="hud-value offline">
+                NO LINK
+            </span>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     MAIN NAVIGATION
+========================================================= -->
+
+<nav class="main-navigation">
+
+
+    <button
+        class="nav-item active"
+        data-page="dashboardPage">
+
+        <span class="nav-number">
+            01
+        </span>
+
+        <span class="nav-text">
+            COMMAND
+        </span>
+
+    </button>
+
+
+    <button
+        class="nav-item"
+        data-page="inspectionPage">
+
+        <span class="nav-number">
+            02
+        </span>
+
+        <span class="nav-text">
+            INSPECTION
+        </span>
+
+    </button>
+
+
+    <button
+        class="nav-item"
+        data-page="trainingPage">
+
+        <span class="nav-number">
+            03
+        </span>
+
+        <span class="nav-text">
+            AI LAB
+        </span>
+
+    </button>
+
+
+    <button
+        class="nav-item"
+        data-page="historyPage">
+
+        <span class="nav-number">
+            04
+        </span>
+
+        <span class="nav-text">
+            HISTORY
+        </span>
+
+    </button>
+
+
+    <button
+        class="nav-item"
+        data-page="analyticsPage">
+
+        <span class="nav-number">
+            05
+        </span>
+
+        <span class="nav-text">
+            ANALYTICS
+        </span>
+
+    </button>
+
+
+    <button
+        class="nav-item"
+        data-page="settingsPage">
+
+        <span class="nav-number">
+            06
+        </span>
+
+        <span class="nav-text">
+            SETTINGS
+        </span>
+
+    </button>
+
+</nav>
+
+
+<!-- =========================================================
+     MAIN CONTENT
+========================================================= -->
+
+<main id="mainContent">
+
+
+<!-- =========================================================
+     PAGE 01 — COMMAND CENTER
+========================================================= -->
+
+<section
+    id="dashboardPage"
+    class="page active-page">
+
+
+    <!-- HERO -->
+
+    <div class="command-hero">
+
+        <div class="hero-copy">
+
+            <div class="hero-overline">
+
+                <span class="hero-line"></span>
+
+                ESP32-CAM / COMPUTER VISION / AI
+
+            </div>
+
+
+            <h2>
+
+                SEE THE
+                <span>DEFECT.</span>
+
+                <br>
+
+                UNDERSTAND THE
+                <span>PART.</span>
+
+            </h2>
+
+
+            <p>
+
+                Intelligent visual inspection for visible
+                surface defects on metal components.
+
+            </p>
+
+
+            <div class="hero-actions">
+
+                <button
+                    id="heroStartScan"
+                    class="primary-action">
+
+                    <span class="action-icon">
+                        ◉
+                    </span>
+
+                    START AI INSPECTION
+
+                </button>
+
+
+                <button
+                    id="heroConnectCamera"
+                    class="secondary-action">
+
+                    CONNECT ESP32-CAM
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- HERO AI CORE -->
+
+        <div class="hero-ai-core">
+
+            <div class="hero-orbit orbit-a"></div>
+            <div class="hero-orbit orbit-b"></div>
+            <div class="hero-orbit orbit-c"></div>
+
+            <div class="hero-core">
+
+                <div class="core-inner">
+
+                    <span>
+                        AI
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="core-label">
+                VISION CORE
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         CAMERA CONNECTION
+    ====================================================== -->
+
+    <section class="module connection-module">
+
+
+        <div class="module-header">
+
+            <div>
+
+                <span class="module-index">
+                    01 / HARDWARE
+                </span>
+
+                <h3>
+                    ESP32-CAM LINK
+                </h3>
+
+            </div>
+
+
+            <div
+                id="connectionState"
+                class="connection-state offline">
+
+                <span></span>
+
+                <strong id="connectionStateText">
+                    DISCONNECTED
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="connection-content">
+
+
+            <!-- RADAR -->
+
+            <div class="connection-radar">
+
+                <div class="radar">
+
+                    <div class="radar-circle circle-1"></div>
+                    <div class="radar-circle circle-2"></div>
+                    <div class="radar-circle circle-3"></div>
+
+                    <div class="radar-cross horizontal"></div>
+                    <div class="radar-cross vertical"></div>
+
+                    <div class="radar-sweep"></div>
+
+                    <div
+                        id="radarTarget"
+                        class="radar-target">
+                    </div>
+
+                    <div class="radar-center">
+
+                        <div class="radar-camera-icon">
+
+                            <span></span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="radar-text">
+
+                    <strong id="radarStatus">
+                        SEARCHING
+                    </strong>
+
+                    <small>
+                        CAMERA NETWORK
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONNECTION CONTROLS -->
+
+            <div class="connection-form">
+
+
+                <div class="form-group">
+
+                    <label>
+                        ESP32-CAM IP ADDRESS
+                    </label>
+
+                    <div class="input-with-prefix">
+
+                        <span>
+                            HTTP://
+                        </span>
+
+                        <input
+                            id="esp32IP"
+                            type="text"
+                            value="192.168.43.120"
+                            placeholder="192.168.x.x"
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>
+                            PORT
+                        </label>
+
+                        <input
+                            id="cameraPort"
+                            type="number"
+                            value="80"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            CAPTURE ENDPOINT
+                        </label>
+
+                        <input
+                            id="cameraEndpoint"
+                            type="text"
+                            value="/capture"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        id="connectCamera"
+                        class="primary-action">
+
+                        CONNECT CAMERA
+
+                    </button>
+
+
+                    <button
+                        id="testCamera"
+                        class="secondary-action">
+
+                        TEST CONNECTION
+
+                    </button>
+
+
+                    <button
+                        id="disconnectCamera"
+                        class="danger-outline">
+
+                        DISCONNECT
+
+                    </button>
+
+                </div>
+
+
+                <div class="connection-telemetry">
+
+
+                    <div>
+
+                        <span>
+                            RESPONSE
+                        </span>
+
+                        <strong id="cameraResponse">
+                            --
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            LATENCY
+                        </span>
+
+                        <strong id="cameraLatency">
+                            -- ms
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            RESOLUTION
+                        </span>
+
+                        <strong id="cameraResolution">
+                            --
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            LAST LINK
+                        </span>
+
+                        <strong id="lastConnection">
+                            --
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         LIVE INSPECTION AREA
+    ====================================================== -->
+
+    <section class="module scanner-module">
+
+
+        <div class="module-header">
+
+            <div>
+
+                <span class="module-index">
+                    02 / VISION
+                </span>
+
+                <h3>
+                    LIVE AI SCANNER
+                </h3>
+
+            </div>
+
+
+            <div class="scanner-live-status">
+
+                <span id="scannerStatusDot"></span>
+
+                <strong id="scannerStatus">
+                    WAITING FOR CAMERA
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="scanner-layout">
+
+
+            <!-- CAMERA VIEW -->
+
+            <div class="camera-system">
+
+
+                <div class="camera-topbar">
+
+                    <div class="camera-title">
+
+                        <span class="camera-rec-dot"></span>
+
+                        ESP32-CAM / LIVE VISION
+
+                    </div>
+
+
+                    <div class="camera-metrics">
+
+                        <span id="cameraFPS">
+                            00 FPS
+                        </span>
+
+                        <span id="cameraResolutionTop">
+                            --- × ---
+                        </span>
+
+                        <span id="cameraTemperature">
+                            CAM TEMP --
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- VIEWPORT -->
+
+                <div
+                    id="cameraViewport"
+                    class="camera-viewport">
+
+
+                    <!-- LIVE IMAGE -->
+
+                    <img
+                        id="cameraFeed"
+                        class="camera-feed"
+                        src=""
+                        alt="ESP32-CAM Live Feed"
+                    >
+
+
+                    <!-- EMPTY CAMERA -->
+
+                    <div
+                        id="cameraEmpty"
+                        class="camera-empty">
+
+                        <div class="empty-camera-icon">
+
+                            <div class="empty-lens"></div>
+
+                        </div>
+
+                        <strong>
+                            NO VIDEO SIGNAL
+                        </strong>
+
+                        <span>
+                            Connect the ESP32-CAM
+                            to begin visual inspection.
+                        </span>
+
+                    </div>
+
+
+                    <!-- DIGITAL HUD -->
+
+                    <div class="camera-hud">
+
+
+                        <div class="hud-corner top-left"></div>
+                        <div class="hud-corner top-right"></div>
+                        <div class="hud-corner bottom-left"></div>
+                        <div class="hud-corner bottom-right"></div>
+
+
+                        <div class="hud-top-left">
+
+                            <span>
+                                VISION FEED
+                            </span>
+
+                            <strong id="feedStatus">
+                                STANDBY
+                            </strong>
+
+                        </div>
+
+
+                        <div class="hud-top-right">
+
+                            <span>
+                                MODE
+                            </span>
+
+                            <strong>
+                                AI AUTO
+                            </strong>
+
+                        </div>
+
+
+                        <div class="hud-bottom-left">
+
+                            <span>
+                                X:
+                            </span>
+
+                            <strong id="cursorX">
+                                000
+                            </strong>
+
+                            <span>
+                                Y:
+                            </span>
+
+                            <strong id="cursorY">
+                                000
+                            </strong>
+
+                        </div>
+
+
+                        <div class="hud-bottom-right">
+
+                            <span>
+                                FRAME
+                            </span>
+
+                            <strong id="frameNumber">
+                                000000
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SCAN GRID -->
+
+                    <div
+                        id="scanGrid"
+                        class="scan-grid">
+                    </div>
+
+
+                    <!-- LASER SCAN -->
+
+                    <div
+                        id="laserScanner"
+                        class="laser-scanner">
+
+                        <div class="laser-glow"></div>
+
+                    </div>
+
+
+                    <!-- TARGET RETICLE -->
+
+                    <div
+                        id="targetReticle"
+                        class="target-reticle">
+
+                        <div class="reticle-corner rc-tl"></div>
+                        <div class="reticle-corner rc-tr"></div>
+                        <div class="reticle-corner rc-bl"></div>
+                        <div class="reticle-corner rc-br"></div>
+
+                        <div class="reticle-center"></div>
+
+                    </div>
+
+
+                    <!-- PART DETECTION BOX -->
+
+                    <div
+                        id="partDetection"
+                        class="detection-box part-detection">
+
+                        <div class="detection-line"></div>
+
+                        <div class="detection-label">
+
+                            <span>
+                                OBJECT
+                            </span>
+
+                            <strong>
+                                METAL PART
+                            </strong>
+
+                        </div>
+
+
+                        <div class="detection-confidence">
+
+                            <span>
+                                CONF
+                            </span>
+
+                            <strong id="partConfidence">
+                                0%
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DEFECT BOX -->
+
+                    <div
+                        id="defectDetection"
+                        class="detection-box defect-detection">
+
+                        <div class="defect-pulse"></div>
+
+                        <div class="defect-label">
+
+                            <span>
+                                DEFECT DETECTED
+                            </span>
+
+                            <strong id="visualDefectType">
+                                --
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MEASUREMENT LINE -->
+
+                    <div
+                        id="measurementOverlay"
+                        class="measurement-overlay">
+
+                        <div class="measurement-line-horizontal"></div>
+
+                        <div class="measurement-line-vertical"></div>
+
+                        <div class="measurement-value width-value">
+                            <span id="visualWidth">
+                                0.00
+                            </span>
+                            mm
+                        </div>
+
+                        <div class="measurement-value height-value">
+                            <span id="visualHeight">
+                                0.00
+                            </span>
+                            mm
+                        </div>
+
+                    </div>
+
+
+                    <!-- SCAN MESSAGE -->
+
+                    <div
+                        id="scanMessage"
+                        class="scan-message">
+
+                        <span class="scan-message-icon">
+                            ◉
+                        </span>
+
+                        <strong id="scanMessageText">
+                            SYSTEM READY
+                        </strong>
+
+                    </div>
+
+
+                    <!-- RESULT FLASH -->
+
+                    <div
+                        id="resultFlash"
+                        class="result-flash">
+                    </div>
+
+                </div>
+
+
+                <!-- CAMERA CONTROL BAR -->
+
+                <div class="camera-control-bar">
+
+
+                    <button
+                        id="startInspection"
+                        class="scanner-control primary">
+
+                        <span>
+                            ▶
+                        </span>
+
+                        START SCAN
+
+                    </button>
+
+
+                    <button
+                        id="stopInspection"
+                        class="scanner-control">
+
+                        <span>
+                            ■
+                        </span>
+
+                        STOP
+
+                    </button>
+
+
+                    <button
+                        id="captureImage"
+                        class="scanner-control">
+
+                        <span>
+                            ◎
+                        </span>
+
+                        CAPTURE
+
+                    </button>
+
+
+                    <button
+                        id="fullscreenCamera"
+                        class="scanner-control">
+
+                        <span>
+                            ⛶
+                        </span>
+
+                        FULLSCREEN
+
+                    </button>
+
+
+                    <div class="control-spacer"></div>
+
+
+                    <div class="camera-control-status">
+
+                        <span id="scanState">
+                            IDLE
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 AI PIPELINE
+            ================================================== -->
+
+            <aside class="ai-panel">
+
+
+                <div class="ai-panel-heading">
+
+                    <div>
+
+                        <span>
+                            AI CORE
+                        </span>
+
+                        <h4>
+                            INSPECTION PIPELINE
+                        </h4>
+
+                    </div>
+
+
+                    <div class="ai-mini-core">
+                        AI
+                    </div>
+
+                </div>
+
+
+                <div class="pipeline">
+
+
+                    <!-- STEP 1 -->
+
+                    <div
+                        id="pipelineCapture"
+                        class="pipeline-step">
+
+                        <div class="pipeline-node">
+                            01
+                        </div>
+
+                        <div class="pipeline-info">
+
+                            <strong>
+                                CAPTURE
+                            </strong>
+
+                            <span>
+                                Acquire camera frame
+                            </span>
+
+                        </div>
+
+                        <div class="pipeline-state"></div>
+
+                    </div>
+
+
+                    <!-- STEP 2 -->
+
+                    <div
+                        id="pipelineDetect"
+                        class="pipeline-step">
+
+                        <div class="pipeline-node">
+                            02
+                        </div>
+
+                        <div class="pipeline-info">
+
+                            <strong>
+                                DETECT
+                            </strong>
+
+                            <span>
+                                Locate metal component
+                            </span>
+
+                        </div>
+
+                        <div class="pipeline-state"></div>
+
+                    </div>
+
+
+                    <!-- STEP 3 -->
+
+                    <div
+                        id="pipelineAnalyze"
+                        class="pipeline-step">
+
+                        <div class="pipeline-node">
+                            03
+                        </div>
+
+                        <div class="pipeline-info">
+
+                            <strong>
+                                ANALYZE
+                            </strong>
+
+                            <span>
+                                Examine visible surface
+                            </span>
+
+                        </div>
+
+                        <div class="pipeline-state"></div>
+
+                    </div>
+
+
+                    <!-- STEP 4 -->
+
+                    <div
+                        id="pipelineMeasure"
+                        class="pipeline-step">
+
+                        <div class="pipeline-node">
+                            04
+                        </div>
+
+                        <div class="pipeline-info">
+
+                            <strong>
+                                MEASURE
+                            </strong>
+
+                            <span>
+                                Estimate defect dimensions
+                            </span>
+
+                        </div>
+
+                        <div class="pipeline-state"></div>
+
+                    </div>
+
+
+                    <!-- STEP 5 -->
+
+                    <div
+                        id="pipelineResult"
+                        class="pipeline-step">
+
+                        <div class="pipeline-node">
+                            05
+                        </div>
+
+                        <div class="pipeline-info">
+
+                            <strong>
+                                RESULT
+                            </strong>
+
+                            <span>
+                                Generate inspection result
+                            </span>
+
+                        </div>
+
+                        <div class="pipeline-state"></div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RESULT -->
+
+                <div
+                    id="inspectionResult"
+                    class="inspection-result unknown">
+
+
+                    <div class="result-orb">
+
+                        <div class="result-orb-inner">
+
+                            <span id="resultIcon">
+                                ?
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="result-content">
+
+                        <span>
+                            INSPECTION RESULT
+                        </span>
+
+                        <h2 id="resultText">
+                            WAITING
+                        </h2>
+
+                        <p id="resultDescription">
+                            Start inspection to analyze
+                            the current camera frame.
+                        </p>
+
+                    </div>
+
+
+                    <div class="confidence-section">
+
+                        <div class="confidence-heading">
+
+                            <span>
+                                AI CONFIDENCE
+                            </span>
+
+                            <strong id="confidence">
+                                0%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="confidence-track">
+
+                            <div
+                                id="confidenceBar"
+                                class="confidence-bar">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         INSPECTION DATA STRIP
+    ====================================================== -->
+
+    <section class="inspection-data-strip">
+
+
+        <div class="data-item">
+
+            <span>
+                DEFECT TYPE
+            </span>
+
+            <strong id="defectType">
+                --
+            </strong>
+
+        </div>
+
+
+        <div class="data-item">
+
+            <span>
+                LOCATION
+            </span>
+
+            <strong id="defectLocation">
+                --
+            </strong>
+
+        </div>
+
+
+        <div class="data-item">
+
+            <span>
+                WIDTH
+            </span>
+
+            <strong id="defectWidth">
+                0.00 mm
+            </strong>
+
+        </div>
+
+
+        <div class="data-item">
+
+            <span>
+                HEIGHT
+            </span>
+
+            <strong id="defectHeight">
+                0.00 mm
+            </strong>
+
+        </div>
+
+
+        <div class="data-item">
+
+            <span>
+                AREA
+            </span>
+
+            <strong id="defectArea">
+                0.00 mm²
+            </strong>
+
+        </div>
+
+
+        <div class="data-item">
+
+            <span>
+                SEVERITY
+            </span>
+
+            <strong id="defectSeverity">
+                --
+            </strong>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         VOICE ASSISTANT
+    ====================================================== -->
+
+    <section class="voice-module">
+
+
+        <div class="voice-visualizer">
+
+            <div class="voice-bar"></div>
+            <div class="voice-bar"></div>
+            <div class="voice-bar"></div>
+            <div class="voice-bar"></div>
+            <div class="voice-bar"></div>
+            <div class="voice-bar"></div>
+            <div class="voice-bar"></div>
+            <div class="voice-bar"></div>
+            <div class="voice-bar"></div>
+            <div class="voice-bar"></div>
+            <div class="voice-bar"></div>
+            <div class="voice-bar"></div>
+
+        </div>
+
+
+        <div class="voice-information">
+
+            <span>
+                AI VOICE ASSISTANT
+            </span>
+
+            <strong id="voiceMessage">
+                Voice assistant ready.
+            </strong>
+
+        </div>
+
+
+        <button
+            id="voiceToggle"
+            class="voice-button">
+
+            VOICE ON
+
+        </button>
+
+
+        <button
+            id="testVoice"
+            class="voice-test">
+
+            TEST VOICE
+
+        </button>
+
+    </section>
+
+
+</section>
+
+
+<!-- =========================================================
+     PAGE 02 — INSPECTION
+========================================================= -->
+
+<section
+    id="inspectionPage"
+    class="page">
+
+
+    <div class="page-heading">
+
+        <span>
+            02 / LIVE VISION
+        </span>
+
+        <h2>
+            DEEP INSPECTION
+        </h2>
+
+        <p>
+            Full-screen AI inspection environment.
+        </p>
+
+    </div>
+
+
+    <div
+        id="deepInspectionViewport"
+        class="deep-inspection-viewport">
+
+
+        <img
+            id="deepInspectionFeed"
+            src=""
+            alt="Deep Inspection Feed"
+        >
+
+
+        <div class="deep-empty">
+
+            <div class="deep-camera-icon"></div>
+
+            <strong>
+                NO CAMERA SIGNAL
+            </strong>
+
+            <span>
+                Connect ESP32-CAM from the command center.
+            </span>
+
+        </div>
+
+
+        <div class="deep-scan-grid"></div>
+
+        <div class="deep-laser"></div>
+
+
+        <div class="deep-target">
+
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+
+        </div>
+
+
+        <div class="deep-hud top">
+
+            <span>
+                VISIONINSPECT AI
+            </span>
+
+            <strong>
+                LIVE INSPECTION
+            </strong>
+
+        </div>
+
+
+        <div class="deep-hud bottom">
+
+            <span id="deepStatus">
+                STANDBY
+            </span>
+
+            <span id="deepFrame">
+                FRAME 000000
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="deep-controls">
+
+        <button
+            id="deepStart"
+            class="primary-action">
+
+            START INSPECTION
+
+        </button>
+
+
+        <button
+            id="deepCapture"
+            class="secondary-action">
+
+            CAPTURE FRAME
+
+        </button>
+
+
+        <button
+            id="deepFullscreen"
+            class="secondary-action">
+
+            FULLSCREEN
+
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     PAGE 03 — AI TRAINING
+========================================================= -->
+
+<section
+    id="trainingPage"
+    class="page">
+
+
+    <div class="page-heading">
+
+        <span>
+            03 / MACHINE LEARNING
+        </span>
+
+        <h2>
+            AI TRAINING LAB
+        </h2>
+
+        <p>
+            Build the visual dataset used by the inspection model.
+        </p>
+
+    </div>
+
+
+    <!-- DATASET STATUS -->
+
+    <div class="dataset-status">
+
+
+        <div class="dataset-stat">
+
+            <span>
+                GOOD IMAGES
+            </span>
+
+            <strong id="goodDatasetCount">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="dataset-stat">
+
+            <span>
+                BAD IMAGES
+            </span>
+
+            <strong id="badDatasetCount">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="dataset-stat">
+
+            <span>
+                TOTAL DATASET
+            </span>
+
+            <strong id="totalDatasetCount">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="dataset-stat">
+
+            <span>
+                MODEL
+            </span>
+
+            <strong id="modelStatus">
+                NOT TRAINED
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- UPLOAD AREAS -->
+
+    <div class="dataset-grid">
+
+
+        <!-- GOOD DATA -->
+
+        <div
+            id="goodUploadZone"
+            class="dataset-zone good-dataset">
+
+
+            <div class="dataset-zone-icon">
+                ✓
+            </div>
+
+
+            <div class="dataset-zone-content">
+
+                <span>
+                    DATASET / CLASS 01
+                </span>
+
+                <h3>
+                    GOOD PARTS
+                </h3>
+
+                <p>
+                    Upload clear images of acceptable
+                    metal components.
+                </p>
+
+
+                <label
+                    for="goodImages"
+                    class="upload-action">
+
+                    ADD GOOD IMAGES
+
+                </label>
+
+
+                <input
+                    id="goodImages"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    multiple
+                    hidden
+                >
+
+
+                <div
+                    id="goodPreview"
+                    class="image-preview">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- BAD DATA -->
+
+        <div
+            id="badUploadZone"
+            class="dataset-zone bad-dataset">
+
+
+            <div class="dataset-zone-icon">
+                !
+            </div>
+
+
+            <div class="dataset-zone-content">
+
+                <span>
+                    DATASET / CLASS 02
+                </span>
+
+                <h3>
+                    DEFECTIVE PARTS
+                </h3>
+
+                <p>
+                    Upload images containing visible
+                    surface defects.
+                </p>
+
+
+                <label
+                    for="badImages"
+                    class="upload-action">
+
+                    ADD BAD IMAGES
+
+                </label>
+
+
+                <input
+                    id="badImages"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    multiple
+                    hidden
+                >
+
+
+                <div
+                    id="badPreview"
+                    class="image-preview">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TRAINING CORE -->
+
+    <div class="training-core-module">
+
+
+        <div class="neural-network">
+
+            <div class="neural-ring nr-1"></div>
+            <div class="neural-ring nr-2"></div>
+            <div class="neural-ring nr-3"></div>
+
+            <div class="neural-node n1"></div>
+            <div class="neural-node n2"></div>
+            <div class="neural-node n3"></div>
+            <div class="neural-node n4"></div>
+            <div class="neural-node n5"></div>
+
+            <div class="neural-center">
+                AI
+            </div>
+
+        </div>
+
+
+        <div class="training-console">
+
+
+            <span>
+                MODEL TRAINING CORE
+            </span>
+
+
+            <h3 id="trainingStatus">
+                READY TO TRAIN
+            </h3>
+
+
+            <p id="trainingMessage">
+                Upload GOOD and BAD images to create
+                a training dataset.
+            </p>
+
+
+            <div class="training-progress">
+
+                <div
+                    id="trainingProgressBar"
+                    class="training-progress-fill">
+                </div>
+
+            </div>
+
+
+            <div class="training-progress-text">
+
+                <span>
+                    TRAINING PROGRESS
+                </span>
+
+                <strong id="trainingPercentage">
+                    0%
+                </strong>
+
+            </div>
+
+
+            <button
+                id="trainAI"
+                class="train-button">
+
+                START MODEL TRAINING
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- MODEL TEST -->
+
+    <div class="model-test-module">
+
+
+        <div>
+
+            <span>
+                MODEL VALIDATION
+            </span>
+
+            <h3>
+                TEST AI MODEL
+            </h3>
+
+            <p>
+                Upload an image and test the trained
+                model before live inspection.
+            </p>
+
+        </div>
+
+
+        <label
+            for="testImage"
+            class="model-test-button">
+
+            SELECT TEST IMAGE
+
+        </label>
+
+
+        <input
+            id="testImage"
+            type="file"
+            accept="image/*"
+            hidden
+        >
+
+
+        <div
+            id="testImagePreview"
+            class="test-image-preview">
+        </div>
+
+
+        <div
+            id="modelTestResult"
+            class="model-test-result">
+
+            WAITING
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     PAGE 04 — HISTORY
+========================================================= -->
+
+<section
+    id="historyPage"
+    class="page">
+
+
+    <div class="page-heading">
+
+        <span>
+            04 / INSPECTION RECORDS
+        </span>
+
+        <h2>
+            INSPECTION HISTORY
+        </h2>
+
+        <p>
+            Previous visual inspection results.
+        </p>
+
+    </div>
+
+
+    <div class="history-toolbar">
+
+
+        <div class="search-box">
+
+            <span>
+                SEARCH
+            </span>
+
+            <input
+                id="historySearch"
+                type="search"
+                placeholder="Inspection ID / defect..."
+            >
+
+        </div>
+
+
+        <select id="historyFilter">
+
+            <option value="all">
+                ALL RESULTS
+            </option>
+
+            <option value="good">
+                GOOD
+            </option>
+
+            <option value="bad">
+                BAD
+            </option>
+
+        </select>
+
+
+        <button
+            id="clearHistory"
+            class="danger-outline">
+
+            CLEAR HISTORY
+
+        </button>
+
+    </div>
+
+
+    <div class="history-container">
+
+
+        <div class="history-table-header">
+
+            <span>
+                ID
+            </span>
+
+            <span>
+                DATE / TIME
+            </span>
+
+            <span>
+                RESULT
+            </span>
+
+            <span>
+                DEFECT
+            </span>
+
+            <span>
+                LOCATION
+            </span>
+
+            <span>
+                SIZE
+            </span>
+
+            <span>
+                CONFIDENCE
+            </span>
+
+        </div>
+
+
+        <div
+            id="historyTable"
+            class="history-list">
+
+            <div class="history-empty">
+
+                <strong>
+                    NO INSPECTION RECORDS
+                </strong>
+
+                <span>
+                    Completed inspections will appear here.
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     PAGE 05 — ANALYTICS
+========================================================= -->
+
+<section
+    id="analyticsPage"
+    class="page">
+
+
+    <div class="page-heading">
+
+        <span>
+            05 / DATA INTELLIGENCE
+        </span>
+
+        <h2>
+            INSPECTION ANALYTICS
+        </h2>
+
+        <p>
+            Visualize inspection performance and defect trends.
+        </p>
+
+    </div>
+
+
+    <!-- STATISTICS -->
+
+    <div class="analytics-stat-grid">
+
+
+        <div class="analytics-stat">
+
+            <span>
+                TOTAL INSPECTIONS
+            </span>
+
+            <strong id="analyticsTotal">
+                0
+            </strong>
+
+            <small>
+                ALL TIME
+            </small>
+
+        </div>
+
+
+        <div class="analytics-stat">
+
+            <span>
+                ACCEPTED PARTS
+            </span>
+
+            <strong id="analyticsGood">
+                0
+            </strong>
+
+            <small>
+                GOOD
+            </small>
+
+        </div>
+
+
+        <div class="analytics-stat">
+
+            <span>
+                DEFECTIVE PARTS
+            </span>
+
+            <strong id="analyticsBad">
+                0
+            </strong>
+
+            <small>
+                BAD
+            </small>
+
+        </div>
+
+
+        <div class="analytics-stat">
+
+            <span>
+                DEFECT RATE
+            </span>
+
+            <strong id="analyticsDefectRate">
+                0%
+            </strong>
+
+            <small>
+                CALCULATED
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- VISUALIZATION -->
+
+    <div class="analytics-visualization">
+
+
+        <div class="analytics-chart-header">
+
+            <div>
+
+                <span>
+                    INSPECTION TREND
+                </span>
+
+                <h3>
+                    QUALITY OVER TIME
+                </h3>
+
+            </div>
+
+
+            <select id="analyticsPeriod">
+
+                <option value="7">
+                    LAST 7 DAYS
+                </option>
+
+                <option value="30">
+                    LAST 30 DAYS
+                </option>
+
+                <option value="all">
+                    ALL DATA
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div
+            id="analyticsChart"
+            class="analytics-chart">
+
+            <canvas id="inspectionChartCanvas"></canvas>
+
+        </div>
+
+    </div>
+
+
+    <!-- DEFECT ANALYSIS -->
+
+    <div class="defect-analysis">
+
+
+        <div>
+
+            <span>
+                DEFECT DISTRIBUTION
+            </span>
+
+            <h3>
+                DETECTED DEFECT TYPES
+            </h3>
+
+        </div>
+
+
+        <div
+            id="defectDistribution"
+            class="defect-distribution">
+
+            <div class="distribution-empty">
+                No defect data available.
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     PAGE 06 — SETTINGS
+========================================================= -->
+
+<section
+    id="settingsPage"
+    class="page">
+
+
+    <div class="page-heading">
+
+        <span>
+            06 / SYSTEM CONTROL
+        </span>
+
+        <h2>
+            SYSTEM SETTINGS
+        </h2>
+
+        <p>
+            Configure camera, AI and interface behavior.
+        </p>
+
+    </div>
+
+
+    <div class="settings-grid">
+
+
+        <!-- CAMERA -->
+
+        <div class="settings-section">
+
+            <div class="settings-section-header">
+
+                <span>
+                    01
+                </span>
+
+                <div>
+
+                    <h3>
+                        CAMERA
+                    </h3>
+
+                    <p>
+                        ESP32-CAM connection settings
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <label>
+                    ESP32-CAM IP
+                </label>
+
+                <input
+                    id="settingsIP"
+                    type="text"
+                    value="192.168.43.120"
+                >
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <label>
+                    Capture Endpoint
+                </label>
+
+                <input
+                    id="settingsEndpoint"
+                    type="text"
+                    value="/capture"
+                >
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <label>
+                    Port
+                </label>
+
+                <input
+                    id="settingsPort"
+                    type="number"
+                    value="80"
+                >
+
+            </div>
+
+        </div>
+
+
+        <!-- AI -->
+
+        <div class="settings-section">
+
+            <div class="settings-section-header">
+
+                <span>
+                    02
+                </span>
+
+                <div>
+
+                    <h3>
+                        AI MODEL
+                    </h3>
+
+                    <p>
+                        Inspection model parameters
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <label>
+                    Confidence Threshold
+                </label>
+
+                <div class="range-setting">
+
+                    <input
+                        id="confidenceThreshold"
+                        type="range"
+                        min="50"
+                        max="100"
+                        value="80"
+                    >
+
+                    <strong id="thresholdValue">
+                        80%
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <label>
+                    Measurement Calibration
+                </label>
+
+                <button
+                    id="calibrationButton"
+                    class="secondary-action">
+
+                    CALIBRATE
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- INTERFACE -->
+
+        <div class="settings-section">
+
+            <div class="settings-section-header">
+
+                <span>
+                    03
+                </span>
+
+                <div>
+
+                    <h3>
+                        INTERFACE
+                    </h3>
+
+                    <p>
+                        System behavior
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="toggle-row">
+
+                <span>
+                    Auto Save Inspection
+                </span>
+
+                <label class="switch">
+
+                    <input
+                        id="autoSave"
+                        type="checkbox"
+                        checked
+                    >
+
+                    <span></span>
+
+                </label>
+
+            </div>
+
+
+            <div class="toggle-row">
+
+                <span>
+                    Voice Assistant
+                </span>
+
+                <label class="switch">
+
+                    <input
+                        id="voiceEnabled"
+                        type="checkbox"
+                        checked
+                    >
+
+                    <span></span>
+
+                </label>
+
+            </div>
+
+
+            <div class="toggle-row">
+
+                <span>
+                    Scanner Animation
+                </span>
+
+                <label class="switch">
+
+                    <input
+                        id="scannerAnimation"
+                        type="checkbox"
+                        checked
+                    >
+
+                    <span></span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- BACKEND -->
+
+        <div class="settings-section">
+
+            <div class="settings-section-header">
+
+                <span>
+                    04
+                </span>
+
+                <div>
+
+                    <h3>
+                        PYTHON BACKEND
+                    </h3>
+
+                    <p>
+                        AI processing server
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <label>
+                    Backend URL
+                </label>
+
+                <input
+                    id="backendURL"
+                    type="text"
+                    value="http://127.0.0.1:5000"
+                >
+
+            </div>
+
+
+            <div class="backend-status">
+
+                <span id="backendDot"></span>
+
+                <strong id="backendStatus">
+                    BACKEND NOT TESTED
+                </strong>
+
+            </div>
+
+
+            <button
+                id="testBackend"
+                class="secondary-action">
+
+                TEST BACKEND
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="settings-save-area">
+
+        <button
+            id="saveSettings"
+            class="primary-action">
+
+            SAVE ALL SETTINGS
+
+        </button>
+
+        <span id="settingsSaved">
+            No changes saved.
+        </span>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<!-- =========================================================
+     GLOBAL NOTIFICATION
+========================================================= -->
+
+<div
+    id="notification"
+    class="notification">
+
+
+    <div class="notification-icon">
+
+        <span id="notificationIcon">
+            ✓
+        </span>
+
+    </div>
+
+
+    <div class="notification-content">
+
+        <strong id="notificationTitle">
+            SYSTEM
+        </strong>
+
+        <p id="notificationMessage">
+            Notification message
+        </p>
+
+    </div>
+
+
+    <button
+        id="closeNotification"
+        class="notification-close">
+
+        ×
+
+    </button>
+
+</div>
+
+
+<!-- =========================================================
+     CALIBRATION MODAL
+========================================================= -->
+
+<div
+    id="calibrationModal"
+    class="modal">
+
+
+    <div class="modal-backdrop"></div>
+
+
+    <div class="modal-window">
+
+
+        <button
+            id="closeCalibration"
+            class="modal-close">
+
+            ×
+
+        </button>
+
+
+        <span>
+            MEASUREMENT SYSTEM
+        </span>
+
+
+        <h2>
+            CAMERA CALIBRATION
+        </h2>
+
+
+        <p>
+            Enter the known physical size of a reference
+            object visible in the camera image.
+        </p>
+
+
+        <div class="calibration-visual">
+
+            <div class="calibration-object">
+
+                <div></div>
+
+                <span>
+                    REFERENCE
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="calibration-form">
+
+
+            <div>
+
+                <label>
+                    Reference Width
+                </label>
+
+                <input
+                    id="referenceWidth"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="10.00"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label>
+                    Unit
+                </label>
+
+                <select id="referenceUnit">
+
+                    <option value="mm">
+                        Millimeter
+                    </option>
+
+                    <option value="cm">
+                        Centimeter
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <button
+            id="saveCalibration"
+            class="primary-action">
+
+            SAVE CALIBRATION
+
+        </button>
+
+
+        <small id="calibrationStatus">
+            Calibration not configured.
+        </small>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     FULLSCREEN INSPECTION MODAL
+========================================================= -->
+
+<div
+    id="fullscreenInspection"
+    class="fullscreen-inspection">
+
+
+    <button
+        id="closeFullscreen"
+        class="fullscreen-close">
+
+        ×
+
+    </button>
+
+
+    <div class="fullscreen-camera">
+
+
+        <img
+            id="fullscreenFeed"
+            src=""
+            alt="Fullscreen ESP32-CAM Feed"
+        >
+
+
+        <div class="fullscreen-empty">
+
+            <strong>
+                CAMERA OFFLINE
+            </strong>
+
+        </div>
+
+
+        <div class="fullscreen-grid"></div>
+
+        <div class="fullscreen-laser"></div>
+
+
+        <div class="fullscreen-target">
+
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+
+        </div>
+
+
+        <div class="fullscreen-header">
+
+            <span>
+                VISIONINSPECT AI
+            </span>
+
+            <strong>
+                FULLSCREEN INSPECTION
+            </strong>
+
+        </div>
+
+
+        <div class="fullscreen-footer">
+
+            <span id="fullscreenStatus">
+                STANDBY
+            </span>
+
+            <span id="fullscreenResult">
+                RESULT: --
+            </span>
+
+            <span id="fullscreenConfidence">
+                CONFIDENCE: 0%
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="system-footer">
+
+
+    <div>
+
+        <strong>
+            VISION<span>INSPECT</span>
+        </strong>
+
+        <span>
+            AI METAL INSPECTION SYSTEM
+        </span>
+
+    </div>
+
+
+    <div>
+
+        ESP32-CAM
+        <span>•</span>
+        COMPUTER VISION
+        <span>•</span>
+        AI
+
+    </div>
+
+
+    <div>
+
+        SYSTEM
+        <strong>
+            v1.0
+        </strong>
+
+    </div>
+
+</footer>
+
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script src="app.js"></script>
+
+</body>
+</html>
